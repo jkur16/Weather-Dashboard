@@ -5,10 +5,10 @@ var searchCity = $("#search-city");
 var searchButton = $("#search-button");
 var clearButton = $("#clear-history");
 var currentCity = $("#current-city");
-var currentTemperature = $("#temperature");
+var currentTemp = $("#temperature");
 var currentHumidty= $("#humidity");
-var currentWSpeed=$("#wind-speed");
-var currentUvindex= $("#uv-index");
+var currentWindSpeed=$("#wind-speed");
+var currentUv= $("#uv-index");
 var sCity=[];
 // searches the city to see if it exists in the entries from the storage
 function find(c){
@@ -41,8 +41,8 @@ function currentWeather(city){
         // parse the response to display the current weather including the City name. the Date and the weather icon. 
         console.log(response);
         //Dta object from server side Api for icon property.
-        var weathericon= response.weather[0].icon;
-        var iconurl="https://openweathermap.org/img/wn/"+weathericon +"@2x.png";
+        var icon= response.weather[0].icon;
+        var iconurl="https://openweathermap.org/img/wn/"+icon +"@2x.png";
         // The date format method is taken from the  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
         var date=new Date(response.dt*1000).toLocaleDateString();
         //parse the response for name of city and concanatig the date and icon.
@@ -51,13 +51,13 @@ function currentWeather(city){
         // Convert the temp to fahrenheit
 
         var tempF = (response.main.temp - 273.15) * 1.80 + 32;
-        $(currentTemperature).html((tempF).toFixed(2)+"&#8457");
+        $(currentTemp).html((tempF).toFixed(2)+"&#8457");
         // Display the Humidity
         $(currentHumidty).html(response.main.humidity+"%");
         //Display Wind speed and convert to MPH
         var ws=response.wind.speed;
         var windsmph=(ws*2.237).toFixed(1);
-        $(currentWSpeed).html(windsmph+"MPH");
+        $(currentWindSpeed).html(windsmph+"MPH");
         // Display UVIndex.
         //By Geographic coordinates method and using appid and coordinates as a parameter we are going build our uv query url inside the function below.
         UVIndex(response.coord.lon,response.coord.lat);
@@ -91,7 +91,7 @@ function UVIndex(ln,lt){
             url:uvqURL,
             method:"GET"
             }).then(function(response){
-                $(currentUvindex).html(response.value);
+                $(currentUv).html(response.value);
             });
 }
     
@@ -138,7 +138,6 @@ function invokePastSearch(event){
 
 }
 
-// render function
 function loadlastCity(){
     $("ul").empty();
     var sCity = JSON.parse(localStorage.getItem("cityname"));
@@ -152,7 +151,7 @@ function loadlastCity(){
     }
 
 }
-//Clear the search history from the page
+//Clear search
 function clearHistory(event){
     event.preventDefault();
     sCity=[];
@@ -160,7 +159,7 @@ function clearHistory(event){
     document.location.reload();
 
 }
-//Click Handlers
+//Handlers
 $("#search-button").on("click",displayWeather);
 $(document).on("click",invokePastSearch);
 $(window).on("load",loadlastCity);
